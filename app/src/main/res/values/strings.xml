@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">RetrofitExample</string>
+    <string name="github_username">Github Username</string>
+    <string name="search">Search</string>
+    <string name="empty_username">Username cannot be empty</string>
+    <string name="username_found">Username found!</string>
+    <string name="followers">followers: %1$s</string>
+    <string name="repositories">repositories: %1$s</string>
+    <string name="connection_error">A connection error occurred</string>
+    <string name="user_not_found">User not found</string>
 </resources>
