@@ -3,8 +3,11 @@ package com.example.pc_3.retrofitexample.GithubUser;
 import com.example.pc_3.retrofitexample.BaseClient;
 import com.example.pc_3.retrofitexample.User;
 
-import retrofit2.Call;
-import retrofit2.Callback;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 /**
@@ -20,19 +23,32 @@ class GithubUserInteractor implements GithubUserContract.Model {
     }
 
     @Override
-    public void fetchUserData(String user) {
-        Call<User> call = BaseClient.provideApiService().getUser(user);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) presenter.userDataFound(response.body());
-                else presenter.errorMessage(response.code());
-            }
+    public void fetchUserData(final String user) {
+        Observable<Response<User>> observable = BaseClient.provideApiService().getUser(user);
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Response<User>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                presenter.userDataFailure();
-            }
-        });
+                    }
+
+                    @Override
+                    public void onNext(Response<User> userResponse) {
+                        if (userResponse.isSuccessful())
+                            presenter.userDataFound(userResponse.body());
+                        else presenter.errorMessage(userResponse.code());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        presenter.userDataFailure();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }
