@@ -20,7 +20,7 @@ public class BaseClient {
         return new OkHttpClient.Builder().addInterceptor(interceptor).build();
     }
 
-    private static Retrofit retrofit() {
+    public static Retrofit retrofit() {
         return new Retrofit.Builder()
                 .baseUrl(BuildConfig.API_URL)
                 .client(provideClient())
